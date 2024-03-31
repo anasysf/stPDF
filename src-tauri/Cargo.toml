@@ -1,6 +1,6 @@
 [package]
 name = "stpdf"
-version = "0.0.0"
+version = "0.0.1"
 description = "A Tauri App"
 authors = ["you"]
 edition = "2021"
@@ -15,4 +15,5 @@ tauri = { version = "2.0.0-beta", features = [] }
 tauri-plugin-shell = "2.0.0-beta"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
-
+image = { version = "0.25.0", default-features = false, features = ["png", "jpeg"] }
+rxing = { version = "0.5.9", default-features = false, features = ["image", "serde"] }
