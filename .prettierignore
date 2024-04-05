@@ -1,0 +1,8 @@
+/dist
+/public
+/node_modules
+/pnpm-lock.yaml
+/src-tauri/target
+/src-tauri/vcpkg
+/src-tauri/capabilities
+/src-tauri/gen

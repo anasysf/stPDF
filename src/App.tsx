@@ -1,30 +1,57 @@
-import { createSignal } from "solid-js";
-import logo from "./assets/logo.svg";
-import { invoke } from "@tauri-apps/api/core";
-import "./App.css";
+/* Import { createSignal } from 'solid-js';
+import logo from './assets/logo.svg';
+import { invoke } from '@tauri-apps/api/core'; */
+import ScanDirectoryForm from './components/ScanDirectoryForm';
 
 function App() {
-  const [greetMsg, setGreetMsg] = createSignal("");
-  const [name, setName] = createSignal("");
+  /* Const [greetMsg, setGreetMsg] = createSignal('');
+  const [name, setName] = createSignal('');
 
   async function greet() {
     // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-    setGreetMsg(await invoke("greet", { name: name() }));
-  }
+    try {
+      const res = await invoke<string>('greet', { name: name() });
+      setGreetMsg(res);
+    } catch (err) {
+      console.error(err);
+    }
+  } */
 
   return (
-    <div class="container">
+    <ScanDirectoryForm />
+    /* <div class="container">
       <h1>Welcome to Tauri!</h1>
 
       <div class="row">
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" class="logo vite" alt="Vite logo" />
+        <a
+          href="https://vitejs.dev"
+          target="_blank"
+        >
+          <img
+            src="/vite.svg"
+            class="logo vite"
+            alt="Vite logo"
+          />
         </a>
-        <a href="https://tauri.app" target="_blank">
-          <img src="/tauri.svg" class="logo tauri" alt="Tauri logo" />
+        <a
+          href="https://tauri.app"
+          target="_blank"
+        >
+          <img
+            src="/tauri.svg"
+            class="logo tauri"
+            alt="Tauri logo"
+          />
         </a>
-        <a href="https://solidjs.com" target="_blank">
-          <img src={logo} class="logo solid" alt="Solid logo" />
+        <a
+          href="https://solidjs.com"
+          target="_blank"
+        >
+          <img
+            src={logo}
+            class="logo solid"
+            alt="Solid logo"
+          />
         </a>
       </div>
 
@@ -32,9 +59,9 @@ function App() {
 
       <form
         class="row"
-        onSubmit={(e) => {
+        onSubmit={async (e) => {
           e.preventDefault();
-          greet();
+          await greet();
         }}
       >
         <input
@@ -46,7 +73,7 @@ function App() {
       </form>
 
       <p>{greetMsg()}</p>
-    </div>
+    </div> */
   );
 }
 

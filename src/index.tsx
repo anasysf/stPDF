@@ -1,7 +1,9 @@
 /* @refresh reload */
-import { render } from "solid-js/web";
+import { render } from 'solid-js/web';
 
-import "./styles.css";
-import App from "./App";
+import './assets/styles/styles.css';
+import './assets/styles/tailwind.css';
 
-render(() => <App />, document.getElementById("root") as HTMLElement);
+import App from './App';
+
+render(() => <App />, document.getElementById('root')!);

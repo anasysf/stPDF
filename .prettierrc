@@ -1,0 +1,8 @@
+{
+  "printWidth": 95,
+  "singleQuote": true,
+  "experimentalTernaries": true,
+  "singleAttributePerLine": true,
+  "htmlWhitespaceSensitivity": "strict",
+  "plugins": ["prettier-plugin-tailwindcss"]
+}
