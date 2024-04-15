@@ -12,10 +12,12 @@ use tauri::AppHandle;
 use tauri_plugin_dialog::{DialogExt, MessageDialogKind};
 
 use crate::{
-  img, scanner::{
+  img,
+  scanner::{
     self,
     errors::{scanner_error::ScannerError, ScannerResult},
-  }, utils
+  },
+  utils,
 };
 
 #[derive(Debug)]
