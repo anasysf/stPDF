@@ -1,7 +1,7 @@
 {
   "productName": "stpdf",
-  "version": "0.0.1",
-  "identifier": "com.st.pdf",
+  "version": "0.0.2",
+  "identifier": "ma.mamda-mcma.st.pdf",
   "build": {
     "beforeDevCommand": "pnpm dev",
     "devUrl": "http://localhost:1420",
