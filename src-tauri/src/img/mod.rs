@@ -1,13 +1,11 @@
-use std::io::{BufReader, Cursor};
+use std::{fs, path::Path};
 
-use image::{io::Reader as ImageReader, DynamicImage};
+use image::DynamicImage;
 
-use crate::scanner::errors::ScannerResult;
+use crate::errors::ScannerResult;
 
-pub fn decode_image(inner: Vec<u8>) -> ScannerResult<DynamicImage> {
-  Ok(
-    ImageReader::new(BufReader::new(Cursor::new(inner)))
-      .with_guessed_format()?
-      .decode()?,
-  )
+pub fn decode_dynamic_image<P: AsRef<Path>>(image_path: P) -> ScannerResult<DynamicImage> {
+  let buffer = fs::read(image_path)?;
+
+  Ok(image::load_from_memory(&buffer)?)
 }
