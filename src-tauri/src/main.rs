@@ -1,8 +1,10 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+use analyzed_documents::AnalyzedDocuments;
 use tauri::AppHandle;
 
+mod analyzed_documents;
 mod barcode_handler;
 mod errors;
 mod img;
@@ -20,12 +22,20 @@ async fn generate_pdfs_from_sources(
   pdf_handler::generate_pdfs_from_sources(sources, target, reference, &app_handle)
 }
 
+#[tauri::command]
+async fn analyze_sources(sources: Vec<Box<str>>, app_handle: AppHandle) -> Vec<AnalyzedDocuments> {
+  AnalyzedDocuments::analyze_sources(&app_handle, sources)
+}
+
 fn main() {
   tauri::Builder::default()
     .plugin(tauri_plugin_fs::init())
     .plugin(tauri_plugin_dialog::init())
     .plugin(tauri_plugin_shell::init())
-    .invoke_handler(tauri::generate_handler![generate_pdfs_from_sources])
+    .invoke_handler(tauri::generate_handler![
+      generate_pdfs_from_sources,
+      analyze_sources,
+    ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
 }

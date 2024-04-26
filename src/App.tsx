@@ -1,5 +1,5 @@
-import ScanImagesForm from './components/ScanImagesForm';
+import ScanImagesView from './views/ScanImagesView';
 
 export default function App() {
-  return <ScanImagesForm />;
+  return <ScanImagesView />;
 }

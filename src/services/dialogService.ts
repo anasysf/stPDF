@@ -6,5 +6,4 @@ export const openImageDialog = async (): Promise<FileResponse[] | null> =>
     multiple: true,
   });
 
-export const openDirectoryDialog = async (): Promise<string | null> =>
-  open({ directory: true });
+export const openDirectoryDialog = async (): Promise<string | null> => open({ directory: true });

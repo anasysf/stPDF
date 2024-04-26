@@ -1,13 +1,22 @@
 use std::{
-  collections::VecDeque, ffi::OsStr, fmt::{Debug, Display}, fs::File, io::BufWriter, path::Path, rc::Rc
+  collections::VecDeque,
+  ffi::OsStr,
+  fmt::{Debug, Display},
+  fs::File,
+  io::BufWriter,
+  path::Path,
+  rc::Rc,
 };
 
-use printpdf::{Image, ImageTransform, Mm, PdfDocument, PdfDocumentReference, PdfLayerReference, PdfPage};
+use printpdf::{
+  Image, ImageTransform, Mm, PdfDocument, PdfDocumentReference, PdfLayerIndex, PdfPage,
+};
 use tauri::{AppHandle, EventTarget, Manager};
 use tauri_plugin_dialog::DialogExt;
 
 use crate::{
-  barcode_handler, img,
+  barcode_handler,
+  img::{self, DecodedImage},
   scanned_document::{child::ScannedDocumentChild, parent::ScannedDocumentParent},
   utils,
 };
@@ -22,7 +31,7 @@ where
   target: P,
   reference: Box<str>,
   doc: Rc<PdfDocumentReference>,
-  pages: Rc<VecDeque<PdfPage>>,
+  pages: VecDeque<Rc<PdfPage>>,
 }
 
 impl<P> PDFDocument<P>
@@ -45,25 +54,29 @@ where
       target,
       reference,
       doc,
-      pages: Rc::default(),
+      pages: VecDeque::new(),
     }
   }
 
-  pub(crate) fn new_page(
-    &self,
+  fn new_page(
+    &mut self,
     width: f32,
     height: f32,
     layer_name: Box<str>,
     page_idx: Option<usize>,
-  ) {
-    let new_page = PdfPage::new(
+  ) -> (Rc<PdfPage>, PdfLayerIndex) {
+    let (new_page, layer_idx) = PdfPage::new(
       Mm(width),
       Mm(height),
       layer_name,
       page_idx.unwrap_or(self.pages.len()),
     );
 
-    self.pages.push_back(new_page);
+    let new_page = Rc::new(new_page);
+
+    self.pages.push_back(Rc::clone(&new_page));
+
+    (new_page, layer_idx)
   }
 }
 
@@ -76,7 +89,7 @@ pub(crate) fn generate_pdfs_from_sources<P: AsRef<Path> + Debug + Display>(
   let mut scanned_documents = VecDeque::new();
 
   for source in sources {
-    match img::decode_dynamic_image(&source) {
+    match DecodedImage::decode_dynamic_image(&source) {
       Ok(image) => {
         let img_file_name = source.as_ref().file_name();
         let event_payload = format!(
