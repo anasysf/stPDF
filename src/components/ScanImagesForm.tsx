@@ -2,19 +2,16 @@ import { invoke } from '@tauri-apps/api/core';
 import { message } from '@tauri-apps/plugin-dialog';
 import { Match, Switch, createMemo, createSignal, type JSX } from 'solid-js';
 import { openDirectoryDialog, openImageDialog } from '../services/dialogService';
-import { useDocumentsContext } from '../stores/documents';
-import {
-  type AnalyzedDocumentsMap,
-  type AnalyzedDocumentsRes,
-} from '../entities/analyzed-documents/types';
+import { useAnalyzedDocumentsContext } from '../stores/analyzed-documents';
+import { type AnalyzedDocument } from '../stores/analyzed-documents/types';
 
 type SubmitEvent = JSX.EventHandlerUnion<HTMLFormElement, Event & { submitter: HTMLElement }>;
 
 export default function ScanImagesForm() {
-  const { sources, setSources } = useDocumentsContext();
+  const [sources, setSources] = createSignal<string[]>([]);
   const [targetDir, setTargetDir] = createSignal<string | null>(null);
   const [reference, setReference] = createSignal<string>('');
-  const { setDocuments } = useDocumentsContext();
+  const [{ setAnalyzedDocs }] = useAnalyzedDocumentsContext();
 
   const isValid = createMemo(
     () =>
@@ -29,8 +26,7 @@ export default function ScanImagesForm() {
       const fileResponses = await openImageDialog();
       if (!fileResponses) return setSources([]);
 
-      const sources = fileResponses.map((fileResponse) => fileResponse.path);
-      return setSources(sources);
+      return setSources(fileResponses.map((fileResponse) => fileResponse.path));
     } catch (err) {
       console.error(err);
 
@@ -68,14 +64,11 @@ export default function ScanImagesForm() {
   const handleSubmit: SubmitEvent = async (evt) => {
     evt.preventDefault();
 
-    const analyzedDocuments = await invoke<Array<AnalyzedDocumentsRes<keyof AnalyzedDocumentsMap>>>(
-      'analyze_sources',
-      {
-        sources: sources(),
-      },
-    );
+    const analyzedDocuments = await invoke<AnalyzedDocument[]>('analyze_sources', {
+      sources: sources(),
+    });
 
-    setDocuments(analyzedDocuments);
+    setAnalyzedDocs(analyzedDocuments);
     clearStates();
   };
 
@@ -86,35 +79,35 @@ export default function ScanImagesForm() {
     >
       <section class="flex items-center gap-x-4">
         <label
-          class={`block w-full truncate rounded text-lg px-4 py-1.5 font-semibold shadow outline-none transition-colors duration-150 ease-in hover:shadow-lg ${sources().length ? 'bg-green-600 text-white hover:bg-green-700 active:bg-green-900' : 'bg-slate-800 text-white hover:bg-slate-700 active:text-slate-300'}`}
+          class={`block w-full truncate rounded px-4 py-1.5 text-lg font-semibold shadow outline-none transition-colors duration-150 ease-in hover:shadow-lg ${sources().length ? 'bg-green-600 text-white hover:bg-green-700 active:bg-green-900' : 'bg-slate-800 text-white hover:bg-slate-700 active:text-slate-300'}`}
           role="button"
           onClick={async () => handleSourceSelect()}
         >
           <Switch fallback={<i class="fa-solid fa-arrow-up-from-bracket mr-3 py-1.5" />}>
             <Match when={sources().length}>
-              <i class="fa-regular fa-circle-check mr-3 py-1.5"></i>
+              <i class="fa-regular fa-circle-check mr-3 py-1.5" />
             </Match>
           </Switch>
-          { sources().length ? 'Selected' : 'Select source(s)' }
+          {sources().length ? 'Selected' : 'Select source(s)'}
         </label>
 
         <label
-          class={`block w-full truncate rounded text-lg px-4 py-1.5 font-semibold shadow outline-none transition-colors duration-150 ease-in hover:shadow-lg ${!!targetDir() ? 'bg-green-600 text-white hover:bg-green-700 active:bg-green-900' : 'bg-slate-800 text-white hover:bg-slate-700 active:text-slate-300'}`}
+          class={`block w-full truncate rounded px-4 py-1.5 text-lg font-semibold shadow outline-none transition-colors duration-150 ease-in hover:shadow-lg ${targetDir() ? 'bg-green-600 text-white hover:bg-green-700 active:bg-green-900' : 'bg-slate-800 text-white hover:bg-slate-700 active:text-slate-300'}`}
           role="button"
           onClick={async () => handleTargetDirSelect()}
         >
           <Switch fallback={<i class="fa-solid fa-arrow-up-from-bracket mr-3 py-1.5" />}>
-            <Match when={!!targetDir()}>
-              <i class="fa-regular fa-circle-check mr-3 py-1.5"></i>
+            <Match when={Boolean(targetDir())}>
+              <i class="fa-regular fa-circle-check mr-3 py-1.5" />
             </Match>
           </Switch>
-          { targetDir() ?? 'Select target directory' }
+          {targetDir() ?? 'Select target directory'}
         </label>
 
         <input
-          type='text'
-          placeholder='Enter a reference...'
-          class='px-4 py-2 bg-slate-800 rounded border-2 border-blue-900 focus:outline-none text-white w-full'
+          type="text"
+          placeholder="Enter a reference..."
+          class="w-full rounded border-2 border-blue-900 bg-slate-800 px-4 py-2 text-white focus:outline-none"
           required
           value={reference()}
           onInput={(e) => setReference(e.currentTarget.value)}
