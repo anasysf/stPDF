@@ -33,8 +33,6 @@ const useProviderValue = () => {
   const nextDocument = () => {
     if (currentDocumentIdx() + 1 > documents().length - 1) return;
 
-    console.log(currentDocumentIdx());
-
     setCurrentParentDocumentImageIdx(0);
     return setCurrentDocumentIdx(currentDocumentIdx() + 1);
   };
