@@ -3,9 +3,9 @@
 
 use tauri::AppHandle;
 
-use crate::analyzed_documents::AnalyzedDocument;
+use crate::analyzed_document::AnalyzedDocument;
 
-mod analyzed_documents;
+mod analyzed_document;
 mod barcode_handler;
 mod errors;
 mod img;

@@ -9,6 +9,7 @@
     "shell:allow-execute",
     "dialog:allow-open",
     "dialog:allow-message",
-    "fs:allow-read-dir"
+    "fs:allow-read-dir",
+    "webview:allow-internal-toggle-devtools"
   ]
 }

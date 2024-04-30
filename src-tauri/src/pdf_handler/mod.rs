@@ -85,7 +85,7 @@ pub(crate) fn generate_pdfs_from_sources<P: AsRef<Path> + Debug + Display>(
     let mut scanned_documents = VecDeque::new();
 
     for source in sources {
-        match DecodedImage::decode_dynamic_image(&source) {
+        match image::open(&source) {
             Ok(image) => {
                 let img_file_name = source.as_ref().file_name();
                 let event_payload = format!(

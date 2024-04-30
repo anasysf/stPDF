@@ -1,4 +1,5 @@
 export type AnalyzedDocument = {
-  readonly identifier: string | null;
+  identifier: string | null;
   readonly imagePath: string;
+  readonly fileName: string;
 };

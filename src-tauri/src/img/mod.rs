@@ -1,16 +1,10 @@
-use std::{
-    fmt::Debug,
-    fs,
-    path::{Path, PathBuf},
-};
+use std::{fmt::Debug, path::PathBuf};
 
 use image::{DynamicImage, GenericImageView};
 use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
 use serde::Serialize;
 use tauri::AppHandle;
 use tauri_plugin_dialog::DialogExt;
-
-use crate::errors::ScannerResult;
 
 #[derive(Serialize)]
 pub(crate) struct DecodedImage {
@@ -30,27 +24,17 @@ impl DecodedImage {
         Self { path, dynamic_image }
     }
 
-    pub(crate) fn decode_dynamic_image<P: AsRef<Path>>(
-        image_path: P,
-    ) -> ScannerResult<DynamicImage> {
-        Ok(image::load_from_memory(&fs::read(image_path)?)?)
-    }
-
     pub(crate) fn decode_dynamic_images(
         app_handle: &AppHandle,
         sources: Vec<Box<str>>,
     ) -> Vec<Self> {
         sources
             .par_iter()
-            .filter_map(|source| match Self::decode_dynamic_image(source.to_string()) {
+            .filter_map(|source| match image::open(source.to_string()) {
                 Ok(dynamic_image) => {
-                    let rgb_image = dynamic_image.into_rgb8();
-                    let (width, height) = rgb_image.dimensions();
-                    let sub_image = rgb_image.view(0, 0, width, height / 10);
-                    let dynamic_image = {
-                        let image = sub_image.to_image();
-                        DynamicImage::ImageRgb8(image)
-                    };
+                    let (width, height) = dynamic_image.dimensions();
+                    let sub_image = dynamic_image.view(0, 0, width, height / 10);
+                    let dynamic_image = DynamicImage::ImageRgba8(sub_image.to_image());
 
                     Some(Self::new(PathBuf::from(source.to_string()), dynamic_image))
                 }

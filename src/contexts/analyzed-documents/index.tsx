@@ -8,26 +8,33 @@ import {
   on,
 } from 'solid-js';
 import { type AnalyzedDocument } from './types';
+import { createStore } from 'solid-js/store';
 
 const makeAnalyzedDocumentsContext = () => {
-  const [analyzedDocs, setAnalyzedDocs] = createSignal<AnalyzedDocument[]>([]);
+  const [analyzedDocs, setAnalyzedDocs] = createStore<AnalyzedDocument[]>([]);
 
   const [currentAnalyzedDocumentIdx, setCurrentAnalyzedDocumentIdx] = createSignal(0);
 
   const currentAnalyzedDocumentByIdx = createMemo(() =>
-    analyzedDocs().at(currentAnalyzedDocumentIdx()),
+    analyzedDocs.at(currentAnalyzedDocumentIdx()),
   );
 
-  createEffect(on([currentAnalyzedDocumentIdx, analyzedDocs, currentAnalyzedDocumentByIdx], () => {
-    if (
-      currentAnalyzedDocumentIdx() < 0 ||
-      currentAnalyzedDocumentIdx() > analyzedDocs().length - 1 ||
-      !currentAnalyzedDocumentByIdx()
-    )
-      throw new RangeError(
-        `Current analyzed document index is out of bounds. index: ${currentAnalyzedDocumentIdx()}`,
-      );
-  }, { defer: true }));
+  createEffect(
+    on(
+      [currentAnalyzedDocumentIdx, currentAnalyzedDocumentByIdx],
+      () => {
+        if (
+          currentAnalyzedDocumentIdx() < 0 ||
+          currentAnalyzedDocumentIdx() > analyzedDocs.length - 1 ||
+          !currentAnalyzedDocumentByIdx()
+        )
+          throw new RangeError(
+            `Current analyzed document index is out of bounds. index: ${currentAnalyzedDocumentIdx()}`,
+          );
+      },
+      { defer: true },
+    ),
+  );
 
   return [
     {

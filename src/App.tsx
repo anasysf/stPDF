@@ -1,5 +1,5 @@
-import ScanImagesView from './views/ScanImagesView';
+import ScanSourcesView from './views/ScanSourcesView';
 
 export default function App() {
-  return <ScanImagesView />;
+  return <ScanSourcesView />;
 }
