@@ -1,22 +1,28 @@
 use std::ffi::OsStr;
 
 use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use tauri::AppHandle;
 
 use crate::{barcode_handler, img::DecodedImage};
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct AnalyzedDocument {
-    identifier: Option<Box<str>>,
-    image_path: Box<str>,
-    file_name: Box<str>,
+    pub(crate) identifier: Option<Box<str>>,
+    pub(crate) image_path: Box<str>,
+    pub(crate) file_name: Box<str>,
+    is_included: bool,
 }
 
 impl AnalyzedDocument {
-    fn new(identifier: Option<Box<str>>, image_path: Box<str>, file_name: Box<str>) -> Self {
-        Self { identifier, image_path, file_name }
+    fn new(
+        identifier: Option<Box<str>>,
+        image_path: Box<str>,
+        file_name: Box<str>,
+        is_included: bool,
+    ) -> Self {
+        Self { identifier, image_path, file_name, is_included }
     }
 
     pub(crate) fn analyze_sources(app_handle: &AppHandle, sources: Vec<Box<str>>) -> Vec<Self> {
@@ -34,6 +40,7 @@ impl AnalyzedDocument {
                             .to_str()
                             .unwrap_or("UNKNOWN")
                             .into(),
+                        true,
                     ),
                     Err(_) => AnalyzedDocument::new(
                         None,
@@ -45,6 +52,7 @@ impl AnalyzedDocument {
                             .to_str()
                             .unwrap_or("UNKNOWN")
                             .into(),
+                        true,
                     ),
                 }
             })
