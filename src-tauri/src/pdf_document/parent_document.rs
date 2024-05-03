@@ -3,17 +3,17 @@ use crate::analyzed_document::AnalyzedDocument;
 use super::child_document::ChildDocument;
 
 pub(crate) struct ParentDocument {
-    pub(crate) identifier: Box<str>,
+    pub(crate) identifier: String,
     pub(crate) image_path: Box<str>,
-    pub(crate) file_name: Box<str>,
+    pub(crate) file_name: String,
     pub(crate) children: Vec<ChildDocument>,
 }
 
 impl ParentDocument {
     pub(crate) fn new(
-        identifier: Box<str>,
+        identifier: String,
         image_path: Box<str>,
-        file_name: Box<str>,
+        file_name: String,
         children: Vec<ChildDocument>,
     ) -> Self {
         Self { identifier, image_path, file_name, children }

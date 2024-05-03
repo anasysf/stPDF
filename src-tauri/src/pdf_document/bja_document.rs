@@ -2,11 +2,11 @@ use crate::analyzed_document::AnalyzedDocument;
 
 pub(crate) struct BjaDocument {
     pub(crate) image_path: Box<str>,
-    pub(crate) file_name: Box<str>,
+    pub(crate) file_name: String,
 }
 
 impl BjaDocument {
-    pub(crate) fn new(image_path: Box<str>, file_name: Box<str>) -> Self {
+    pub(crate) fn new(image_path: Box<str>, file_name: String) -> Self {
         Self { image_path, file_name }
     }
 }

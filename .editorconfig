@@ -10,5 +10,5 @@ trim_trailing_whitespace = true
 [*.rs]
 indent_size = 4
 
-[*.{tsx,ts,json,css,html}]
+[*.{tsx,ts,json,css,html,sh}]
 indent_size = 2

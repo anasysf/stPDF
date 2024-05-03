@@ -1,12 +1,30 @@
-import { type ParentComponent, createContext, useContext, createSignal } from 'solid-js';
+import { type ParentComponent, createContext, useContext } from 'solid-js';
+import { createStore } from 'solid-js/store';
+import { type SourcesFormData } from './types';
 
 const makeSourcesContext = () => {
-  const [sources, setSources] = createSignal<string[]>([]);
+  const [sourcesFormData, setSourcesFormData] = createStore<SourcesFormData>({
+    sources: [],
+    targetDir: null,
+    reference: '',
+    watermark: '',
+    identifierType: 'code-128',
+  });
+
+  const updateSourcesFormData = <K extends keyof SourcesFormData, V extends SourcesFormData[K]>(
+    field: K,
+    value: V,
+  ): void => {
+    setSourcesFormData({
+      [field]: value,
+    });
+  };
 
   return [
     {
-      sources,
-      setSources,
+      sourcesFormData,
+      setSourcesFormData,
+      updateSourcesFormData,
     },
   ] as const;
 };

@@ -9,17 +9,17 @@ use crate::{barcode_handler, img::DecodedImage};
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct AnalyzedDocument {
-    pub(crate) identifier: Option<Box<str>>,
+    pub(crate) identifier: Option<String>,
     pub(crate) image_path: Box<str>,
-    pub(crate) file_name: Box<str>,
+    pub(crate) file_name: String,
     is_included: bool,
 }
 
 impl AnalyzedDocument {
     fn new(
-        identifier: Option<Box<str>>,
+        identifier: Option<String>,
         image_path: Box<str>,
-        file_name: Box<str>,
+        file_name: String,
         is_included: bool,
     ) -> Self {
         Self { identifier, image_path, file_name, is_included }

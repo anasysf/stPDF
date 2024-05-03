@@ -15,9 +15,17 @@ const makeAnalyzedDocumentsContext = () => {
 
   const [currentAnalyzedDocumentIdx, setCurrentAnalyzedDocumentIdx] = createSignal(0);
 
+  const [isValidDocuments, setIsValidDocuments] = createSignal(false);
+
   const currentAnalyzedDocumentByIdx = createMemo(() =>
     analyzedDocs.at(currentAnalyzedDocumentIdx()),
   );
+
+  const contracts = createMemo(() =>
+    analyzedDocs.filter((doc) => Boolean(doc.identifier) && doc.identifier!.trim().length !== 0),
+  );
+
+  const includedDocuments = createMemo(() => analyzedDocs.filter((doc) => doc.isIncluded));
 
   createEffect(
     on(
@@ -40,9 +48,13 @@ const makeAnalyzedDocumentsContext = () => {
     {
       analyzedDocs,
       setAnalyzedDocs,
+      isValidDocuments,
+      setIsValidDocuments,
       currentAnalyzedDocumentIdx,
       setCurrentAnalyzedDocumentIdx,
       currentAnalyzedDocumentByIdx,
+      contracts,
+      includedDocuments,
     },
   ] as const;
 };

@@ -1,12 +1,12 @@
 import { convertFileSrc } from '@tauri-apps/api/core';
 import { useAnalyzedDocumentsContext } from '../../contexts/analyzed-documents';
-import { Show, createSignal } from 'solid-js';
+import { createSignal } from 'solid-js';
 import './styles/index.css';
 
 type DragEvent = MouseEvent & {
-    currentTarget: HTMLDivElement;
-    target: Element;
-}
+  currentTarget: HTMLDivElement;
+  target: Element;
+};
 
 export default () => {
   let img!: HTMLImageElement;
@@ -47,20 +47,24 @@ export default () => {
   };
 
   return (
-    <Show when={Boolean(currentAnalyzedDocumentByIdx())}>
-      <div
-        ref={container}
-        class="scroller h-[28rem] w-full overflow-hidden relative"
-        onMouseDown={(e) => mouseDown(e)}
-        onMouseUp={() => mouseUp()}
-        onMouseMove={(e) => mouseMove(e)}
-      >
-        <img
-          ref={img}
-          src={convertFileSrc(currentAnalyzedDocumentByIdx()!.imagePath)}
-          class="w-full max-w-none h-auto absolute"
-        />
-      </div>
-    </Show>
+    <div
+      ref={container}
+      class="scroller relative h-[28.7rem] w-full overflow-hidden"
+      onMouseDown={(e) => {
+        mouseDown(e);
+      }}
+      onMouseUp={() => {
+        mouseUp();
+      }}
+      onMouseMove={(e) => {
+        mouseMove(e);
+      }}
+    >
+      <img
+        ref={img}
+        src={convertFileSrc(currentAnalyzedDocumentByIdx()!.imagePath)}
+        class="absolute h-auto w-full max-w-none"
+      />
+    </div>
   );
 };

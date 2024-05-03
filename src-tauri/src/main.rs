@@ -21,11 +21,11 @@ async fn analyze_sources(sources: Vec<Box<str>>, app_handle: AppHandle) -> Vec<A
 #[tauri::command]
 async fn generate_pdfs(
     app_handle: AppHandle,
-    documents: Vec<AnalyzedDocument>,
+    analyzed_documents: Vec<AnalyzedDocument>,
     target_directory: Box<str>,
     reference: Box<str>,
 ) {
-    let docs = Document::from_analyzed_documents(documents);
+    let docs = Document::from_analyzed_documents(analyzed_documents);
     Document::generate_pdfs(app_handle, docs, target_directory, reference)
 }
 

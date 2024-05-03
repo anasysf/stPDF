@@ -62,7 +62,7 @@ impl Document {
                         Ok(image) => {
                             let (width, height) = image.dimensions();
                             let (doc, initial_page, initial_layer) = PdfDocument::new(
-                                bja_document.file_name.clone(),
+                                bja_document.file_name.as_str(),
                                 Mm(utils::convert_px_to_mm(width as f32, None)),
                                 Mm(utils::convert_px_to_mm(height as f32, None)),
                                 "First Layer",
@@ -112,7 +112,7 @@ impl Document {
                         Ok(image) => {
                             let (width, height) = image.dimensions();
                             let (doc, initial_page, initial_layer) = PdfDocument::new(
-                                parent_document.file_name.clone(),
+                                parent_document.file_name.as_str(),
                                 Mm(utils::convert_px_to_mm(width as f32, None)),
                                 Mm(utils::convert_px_to_mm(height as f32, None)),
                                 "First Layer",
@@ -133,7 +133,7 @@ impl Document {
                                             let (page_idx, layer_idx) = doc.add_page(
                                                 Mm(utils::convert_px_to_mm(width as f32, None)),
                                                 Mm(utils::convert_px_to_mm(height as f32, None)),
-                                                child.file_name.clone(),
+                                                child.file_name.as_str(),
                                             );
                                             doc.get_page(page_idx).get_layer(layer_idx)
                                         };
@@ -151,7 +151,7 @@ impl Document {
                                 }
                             }
 
-                            let identifier = parent_document.identifier.clone();
+                            let identifier = parent_document.identifier.as_str();
                             let file_name = format!("{identifier}_{reference}.pdf");
                             let pdf_path = Path::new(target_directory.as_ref()).join(file_name);
 
