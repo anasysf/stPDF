@@ -9,6 +9,7 @@ const makeSourcesContext = () => {
     reference: '',
     watermark: '',
     identifierType: 'code-128',
+    branchContract: 'c-auto',
   });
 
   const updateSourcesFormData = <K extends keyof SourcesFormData, V extends SourcesFormData[K]>(
