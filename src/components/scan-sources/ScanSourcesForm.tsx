@@ -104,6 +104,7 @@ export default () => {
         targetDir: null,
         watermark: '',
         identifierType: 'code-128',
+        branchContract: 'c-auto',
       }),
     );
   };
@@ -171,7 +172,7 @@ export default () => {
           <div class="inline-flex flex-row-reverse items-center gap-x-2">
             <button
               type="submit"
-              class={`inline-flex w-max items-center gap-x-2 rounded px-4 py-2 font-semibold text-white outline-none transition-colors duration-150 ease-in-out ${isValid() ? 'bg-teal-800 text-white hover:bg-teal-700 active:bg-teal-900 shadow hover:shadow-lg' : 'cursor-not-allowed bg-slate-300'}`}
+              class={`inline-flex w-max items-center gap-x-2 rounded px-4 py-2 font-semibold text-white outline-none transition-colors duration-150 ease-in-out ${isValid() ? 'bg-teal-800 text-white shadow hover:bg-teal-700 hover:shadow-lg active:bg-teal-900' : 'cursor-not-allowed bg-slate-300'}`}
               disabled={!isValid()}
             >
               <i class="fa-solid fa-barcode" />

@@ -1,9 +1,9 @@
 import { For } from 'solid-js';
-import { type BarcodeTypes } from '../../contexts/sources/types';
+import { type IdentifierTypes } from '../../contexts/sources/types';
 import { useSourcesContext } from '../../contexts/sources';
 
 export default () => {
-  const barcodeTypes: Record<BarcodeTypes, string> = {
+  const barcodeTypes: Record<IdentifierTypes, string> = {
     'code-128': 'Code 128',
     'qr-code': 'QR Code',
   } as const;
@@ -25,7 +25,7 @@ export default () => {
       <select
         class="w-full rounded bg-slate-800 px-3 py-2.5 text-lg text-white focus:outline-none"
         onChange={(e) => {
-          updateSourcesFormData('identifierType', e.currentTarget.value as BarcodeTypes);
+          updateSourcesFormData('identifierType', e.currentTarget.value as IdentifierTypes);
         }}
       >
         <option

@@ -21,11 +21,23 @@ const makeSourcesContext = () => {
     });
   };
 
+  const resetSourcesFormData = () => {
+    setSourcesFormData({
+      sources: [],
+      targetDir: null,
+      reference: '',
+      watermark: '',
+      identifierType: 'code-128',
+      branchContract: 'c-auto',
+    });
+  };
+
   return [
     {
       sourcesFormData,
       setSourcesFormData,
       updateSourcesFormData,
+      resetSourcesFormData,
     },
   ] as const;
 };

@@ -11,6 +11,7 @@
     "dialog:allow-message",
     "fs:allow-read-dir",
     "webview:allow-internal-toggle-devtools",
-    "event:allow-listen"
+    "event:allow-listen",
+    "event:allow-unlisten"
   ]
 }

@@ -44,6 +44,10 @@ const makeAnalyzedDocumentsContext = () => {
     ),
   );
 
+  const resetDocs = () => {
+    setAnalyzedDocs([]);
+  };
+
   return [
     {
       analyzedDocs,
@@ -55,6 +59,7 @@ const makeAnalyzedDocumentsContext = () => {
       currentAnalyzedDocumentByIdx,
       contracts,
       includedDocuments,
+      resetDocs,
     },
   ] as const;
 };

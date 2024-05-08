@@ -1,6 +1,5 @@
 import { Show } from 'solid-js';
 import Carousel from './Carousel';
-import CarouselNavigationBtns from './CarouselNavigationBtns';
 import DetailsBar from './DetailsBar';
 import SourcesGalleryBar from './SourcesGalleryBar';
 import { useAnalyzedDocumentsContext } from '../../contexts/analyzed-documents';
@@ -12,25 +11,26 @@ export default () => {
 
   return (
     <Show
-      when={analyzedDocs.length}
+      when={analyzedDocs.length !== 0}
       fallback={<NoAnalyzedDocumentsSection />}
     >
-      <section class="grid w-11/12 grid-cols-12 gap-x-4">
-        <div class="col-span-4">
-          <SourcesGalleryBar />
-        </div>
+      <section class="flex w-11/12 flex-col gap-y-2">
+        <div class="grid w-full grid-cols-12 gap-x-4">
+          <div class="col-span-4">
+            <SourcesGalleryBar />
+          </div>
 
-        <div class="col-span-5 flex w-full flex-col gap-y-2">
-          <Carousel />
+          <div class="col-span-5">
+            <Carousel />
+          </div>
 
-          <div class="inline-flex w-full items-center justify-between">
-            <StatusBar />
-            <CarouselNavigationBtns />
+          <div class="col-span-3">
+            <DetailsBar />
           </div>
         </div>
 
-        <div class="col-span-3">
-          <DetailsBar />
+        <div class="w-full">
+          <StatusBar />
         </div>
       </section>
     </Show>

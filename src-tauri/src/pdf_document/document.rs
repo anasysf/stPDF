@@ -188,7 +188,5 @@ impl Document {
                 }
             }
         }
-
-        app_handle.emit_to(EventTarget::App, "done-generating-pdfs", ()).unwrap();
     }
 }

@@ -1,4 +1,4 @@
-export type BarcodeTypes = 'code-128' | 'qr-code';
+export type IdentifierTypes = 'code-128' | 'qr-code';
 export type BranchContracts = 'c-auto' | 'c-rd' | 'c-mrc';
 
 export type SourcesFormData = {
@@ -6,6 +6,6 @@ export type SourcesFormData = {
   readonly targetDir: string | null;
   readonly reference: string;
   readonly watermark: string;
-  readonly identifierType: BarcodeTypes;
+  readonly identifierType: IdentifierTypes;
   readonly branchContract: BranchContracts;
 };

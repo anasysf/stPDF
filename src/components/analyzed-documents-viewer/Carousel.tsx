@@ -1,7 +1,6 @@
 import { convertFileSrc } from '@tauri-apps/api/core';
 import { useAnalyzedDocumentsContext } from '../../contexts/analyzed-documents';
 import { createSignal } from 'solid-js';
-import './styles/index.css';
 
 type DragEvent = MouseEvent & {
   currentTarget: HTMLDivElement;
@@ -49,7 +48,7 @@ export default () => {
   return (
     <div
       ref={container}
-      class="scroller relative h-[28.7rem] w-full overflow-hidden"
+      class="relative h-[31.3rem] w-full overflow-hidden rounded bg-crust shadow-xl"
       onMouseDown={(e) => {
         mouseDown(e);
       }}

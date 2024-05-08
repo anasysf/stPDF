@@ -1,4 +1,4 @@
-import { Index } from 'solid-js';
+import { For } from 'solid-js';
 import { convertFileSrc } from '@tauri-apps/api/core';
 import { useAnalyzedDocumentsContext } from '../../contexts/analyzed-documents';
 import './styles/index.css';
@@ -8,22 +8,25 @@ export default () => {
     useAnalyzedDocumentsContext();
 
   return (
-    <aside class="scroller flex h-[32.5rem] grow overflow-y-auto scroll-smooth">
+    <aside
+      class="flex h-[31.5rem] w-full grow overflow-y-auto scroll-smooth rounded bg-crust px-3 py-2.5 shadow-xl"
+      data-simplebar
+    >
       <div
-        class="grid grid-cols-4 gap-0.5 rounded"
+        class="grid grid-cols-4 gap-1.5 rounded"
         role="list"
       >
-        <Index each={analyzedDocs}>
+        <For each={analyzedDocs}>
           {(doc, idx) => (
             <img
-              id={`source-${idx}`}
-              src={convertFileSrc(doc().imagePath)}
-              class={`cursor-pointer rounded-lg border-4 transition-colors duration-150 ease-in hover:border-blue-600 ${currentAnalyzedDocumentIdx() === idx ? 'border-blue-600' : 'border-transparent'}`}
+              id={`source-${idx()}`}
+              src={convertFileSrc(doc.imagePath)}
+              class={`cursor-pointer rounded-lg border-4 transition-colors duration-150 ease-in ${currentAnalyzedDocumentIdx() === idx() ? 'border-blue' : 'border-transparent hover:border-teal'}`}
               loading="lazy"
-              onClick={() => setCurrentAnalyzedDocumentIdx(idx)}
+              onClick={() => setCurrentAnalyzedDocumentIdx(idx())}
             />
           )}
-        </Index>
+        </For>
       </div>
     </aside>
   );

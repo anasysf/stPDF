@@ -1,15 +1,16 @@
-import ScanSourcesForm from '../components/scan-sources/ScanSourcesForm';
 import { AnalyzedDocumentsProvider } from '../contexts/analyzed-documents';
 import { SourcesProvider } from '../contexts/sources';
 import AnalyzedDocumentsSection from '../components/analyzed-documents-viewer/AnalyzedDocumentsSection';
+import Form from '../components/scan-sources/Form';
 
 export default () => (
-  <main class="flex min-h-screen flex-col items-center bg-slate-900">
+  <main class="flex min-h-screen flex-col items-center gap-y-4 bg-base">
     <AnalyzedDocumentsProvider>
       <SourcesProvider>
-        <section class="flex w-11/12 flex-col items-center">
+        <Form />
+        {/* <section class="flex w-11/12 flex-col items-center">
           <ScanSourcesForm />
-        </section>
+        </section> */}
 
         <AnalyzedDocumentsSection />
       </SourcesProvider>
