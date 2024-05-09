@@ -1,6 +1,6 @@
 {
   "productName": "stpdf",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "identifier": "ma.mamda-mcma.st.pdf",
   "build": {
     "beforeDevCommand": "pnpm dev",

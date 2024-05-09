@@ -11,6 +11,7 @@ mod barcode_handler;
 mod errors;
 mod img;
 mod pdf_document;
+mod registries;
 mod utils;
 
 #[tauri::command]
