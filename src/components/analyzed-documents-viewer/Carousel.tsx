@@ -61,7 +61,7 @@ export default () => {
     >
       <img
         ref={img}
-        src={convertFileSrc(currentAnalyzedDocumentByIdx()!.imagePath)}
+        src={convertFileSrc(currentAnalyzedDocumentByIdx()!.metadata.imagePath)}
         class="absolute h-auto w-full max-w-none"
       />
     </div>

@@ -11,11 +11,24 @@ export default () => {
     <aside class="rounded bg-crust p-5 shadow-xl">
       <ul class="divide-y-2 divide-mauve">
         <li class="pb-4">
-          <p class="text-sm font-bold text-white">{currentAnalyzedDocumentByIdx()?.fileName}</p>
+          <p class="text-sm font-bold text-white">
+            {String.fromCharCode.apply(
+              null,
+              Array.from(currentAnalyzedDocumentByIdx()!.metadata.fileName.Windows),
+            )}
+          </p>
         </li>
 
         <li class="py-4">
-          <p class="text-sm font-bold text-white">{currentAnalyzedDocumentByIdx()?.imagePath}</p>
+          <p class="text-sm font-bold text-white">
+            {currentAnalyzedDocumentByIdx()?.metadata.imagePath}
+          </p>
+        </li>
+
+        <li class="py-4">
+          <p class="text-sm font-bold text-white">
+            {currentAnalyzedDocumentByIdx()?.metadata.size.toString()} Mb
+          </p>
         </li>
 
         <li class="py-4">

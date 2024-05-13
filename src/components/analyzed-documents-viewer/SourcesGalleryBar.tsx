@@ -20,7 +20,7 @@ export default () => {
           {(doc, idx) => (
             <img
               id={`source-${idx()}`}
-              src={convertFileSrc(doc.imagePath)}
+              src={convertFileSrc(doc.metadata.imagePath)}
               class={`cursor-pointer rounded-lg border-4 transition-colors duration-150 ease-in ${currentAnalyzedDocumentIdx() === idx() ? 'border-blue' : 'border-transparent hover:border-teal'}`}
               loading="lazy"
               onClick={() => setCurrentAnalyzedDocumentIdx(idx())}

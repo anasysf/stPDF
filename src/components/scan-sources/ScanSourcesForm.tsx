@@ -6,7 +6,7 @@ import Title from './forms/Title';
 import { invoke } from '@tauri-apps/api/core';
 import { type AnalyzedDocument } from '../../contexts/analyzed-documents/types';
 import { useAnalyzedDocumentsContext } from '../../contexts/analyzed-documents';
-import { isNotNull } from '../../utils/type-guard';
+import { exists } from '../../utils/type-guard';
 import { listen } from '@tauri-apps/api/event';
 import ProgressModal from '../modals/ProgressModal';
 
@@ -18,8 +18,8 @@ type SubmitEvent = Event & {
 };
 
 export default () => {
-  let startedAnalyzingSourcesUnlisten: Awaited<ReturnType<typeof listen>>;
-  let currentSourceUnlisten: Awaited<ReturnType<typeof listen>>;
+  let startedAnalyzingSourcesUnlisten: Awaited<ReturnType<typeof listen>> | undefined;
+  let currentSourceUnlisten: Awaited<ReturnType<typeof listen>> | undefined;
 
   const [{ sourcesFormData, resetSourcesFormData }] = useSourcesContext();
   const [{ setAnalyzedDocs, resetDocs }] = useAnalyzedDocumentsContext();
@@ -32,7 +32,7 @@ export default () => {
     () =>
       sourcesFormData.sources.length !== 0 ||
       sourcesFormData.reference.trim().length !== 0 ||
-      (isNotNull(sourcesFormData.targetDir) && sourcesFormData.targetDir.trim().length !== 0) ||
+      (exists(sourcesFormData.targetDir) && sourcesFormData.targetDir.trim().length !== 0) ||
       sourcesFormData.watermark.trim().length !== 0,
   );
 
@@ -40,7 +40,7 @@ export default () => {
     () =>
       sourcesFormData.sources.length !== 0 &&
       sourcesFormData.reference.trim().length !== 0 &&
-      isNotNull(sourcesFormData.targetDir) &&
+      exists(sourcesFormData.targetDir) &&
       sourcesFormData.targetDir.trim().length !== 0 &&
       sourcesFormData.watermark.trim().length !== 0,
   );
@@ -62,7 +62,7 @@ export default () => {
       );
 
       const analyzedDocuments = await invoke<AnalyzedDocument[]>('analyze_sources', {
-        sources: sourcesFormData.sources,
+        optionsRegistry: sourcesFormData,
       });
 
       setAnalyzedDocs(analyzedDocuments);
@@ -79,8 +79,9 @@ export default () => {
   };
 
   onCleanup(() => {
-    startedAnalyzingSourcesUnlisten();
-    currentSourceUnlisten();
+    if (exists(startedAnalyzingSourcesUnlisten)) startedAnalyzingSourcesUnlisten();
+
+    if (exists(currentSourceUnlisten)) currentSourceUnlisten();
   });
 
   return (

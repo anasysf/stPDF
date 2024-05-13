@@ -11,7 +11,9 @@ export default () => {
 
   const currentContractIdx = createMemo(() =>
     contracts().findIndex(
-      (contract) => contract.imagePath.trim() === currentAnalyzedDocumentByIdx()?.imagePath.trim(),
+      (contract) =>
+        contract.metadata.imagePath.trim() ===
+        currentAnalyzedDocumentByIdx()?.metadata.imagePath.trim(),
     ),
   );
 

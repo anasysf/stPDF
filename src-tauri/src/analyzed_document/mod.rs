@@ -1,105 +1,87 @@
-use std::{ffi::OsStr, path::Path};
+use std::{ffi::OsStr, fmt::Display, path::Path};
 
-use image::{imageops::FilterType, DynamicImage};
+use image::DynamicImage;
 use rayon::iter::{IndexedParallelIterator, IntoParallelRefIterator, ParallelIterator};
 use serde::{Deserialize, Serialize};
 use tauri::{AppHandle, EventTarget, Manager};
 
-use crate::{barcode_handler, img::{DecodedImage, DecodedImages}, registries::options_registry::OptionsRegistry};
+use crate::{
+    identifier_handler, img::DecodedImage, registries::options_registry::OptionsRegistry, utils,
+};
 
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub(crate) struct AnalyzedDocuments<P: AsRef<Path> + Clone> {
-    identifier: Option<Box<str>>,
-    image_path: Box<P>,
-    file_name: Box<OsStr>,
+pub struct AnalyzedDocument<P: AsRef<Path> + Clone + Display + Send + Sync> {
+    pub identifier: Option<Box<str>>,
     is_included: bool,
+    pub metadata: DocumentMetadata<P>,
 }
 
-impl<P: AsRef<Path> + Clone> AnalyzedDocuments<P> {
-    pub(crate) fn new(
+#[derive(Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct DocumentMetadata<P: AsRef<Path> + Clone + Display + Send + Sync> {
+    pub image_path: P,
+    pub file_name: Box<OsStr>,
+    size: u64,
+}
+
+impl<P: AsRef<Path> + Clone + Display + Send + Sync> DocumentMetadata<P> {
+    fn new(image_path: P, file_name: Box<OsStr>, size: u64) -> Self {
+        Self { image_path, file_name, size }
+    }
+}
+
+impl<P: AsRef<Path> + Clone + Display + Send + Sync> AnalyzedDocument<P> {
+    pub fn new(
         identifier: Option<Box<str>>,
-        image_path: Box<P>,
-        file_name: Box<OsStr>,
         is_included: bool,
+        metadata: DocumentMetadata<P>,
     ) -> Self {
-        Self { identifier, image_path, file_name, is_included }
+        Self { identifier, is_included, metadata }
     }
 
-    pub(crate) fn analyze_sources(
-        app_handle: &AppHandle,
+    pub fn analyze_sources(
+        app_handle: AppHandle,
         options_registry: OptionsRegistry<P>,
     ) -> Box<[Self]> {
         app_handle
             .emit_to(EventTarget::App, "started-analyzing-sources", options_registry.sources.len())
             .ok();
 
-        DecodedImages::to_decoded_images(options_registry)
-            .iter()
-            .map(|decoded_image| {
-                let compressed_image = decoded_image.compress(FilterType::Nearest);
-
-                let identifier = if let Ok(result) = barcode_handler::decode_barcode_code_128(&DynamicImage::from(compressed_image)) {
-                    Some(result.getText())
-                } else {
-                    None
-                }
-
-                Self::new(identifier, decoded_image.path, de, is_included)
-            })
-            .collect()
-    }
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub(crate) struct AnalyzedDocument {
-    pub(crate) identifier: Option<String>,
-    pub(crate) image_path: Box<str>,
-    pub(crate) file_name: String,
-    is_included: bool,
-}
-
-impl AnalyzedDocument {
-    fn new(
-        identifier: Option<String>,
-        image_path: Box<str>,
-        file_name: String,
-        is_included: bool,
-    ) -> Self {
-        Self { identifier, image_path, file_name, is_included }
-    }
-
-    pub(crate) fn analyze_sources(app_handle: &AppHandle, sources: Vec<Box<str>>) -> Vec<Self> {
-        app_handle.emit_to(EventTarget::App, "started-analyzing-sources", sources.len()).unwrap();
-
-        DecodedImage::decode_dynamic_images(app_handle, sources)
+        DecodedImage::to_decoded_images(&options_registry)
             .par_iter()
             .enumerate()
             .map(|(idx, decoded_image)| {
-                app_handle.emit_to(EventTarget::App, "current-source", idx + 1).unwrap();
+                app_handle.emit_to(EventTarget::App, "current-source", idx).ok();
 
-                let identifier: Option<String> = if let Ok(result) =
-                    barcode_handler::decode_barcode_code_128(&decoded_image.dynamic_image)
-                {
+                let identifier = if let Ok(result) = identifier_handler::decode_identifier(
+                    &DynamicImage::from(decoded_image.sub_image.clone()),
+                    &options_registry,
+                ) {
                     Some(result.getText().into())
                 } else {
                     None
                 };
 
-                AnalyzedDocument::new(
+                // File size in bytes.
+                let size_bytes = decoded_image.path.as_ref().metadata().unwrap().len();
+                let size_mb = utils::bytes_to_mb(size_bytes);
+
+                Self::new(
                     identifier,
-                    decoded_image.path.display().to_string().into(),
-                    decoded_image
-                        .path
-                        .file_name()
-                        .unwrap_or(OsStr::new("UNKNOWN"))
-                        .to_str()
-                        .unwrap_or("UNKNOWN")
-                        .into(),
                     true,
+                    DocumentMetadata::new(
+                        decoded_image.path.clone(),
+                        decoded_image
+                            .path
+                            .as_ref()
+                            .file_name()
+                            .unwrap_or(OsStr::new("UNKNOWN"))
+                            .into(),
+                        size_mb,
+                    ),
                 )
             })
-            .collect::<Vec<Self>>()
+            .collect()
     }
 }

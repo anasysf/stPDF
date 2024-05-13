@@ -1,4 +1,4 @@
-use std::{fs::File, io::BufWriter, path::Path};
+use std::{fmt::Display, fs::File, io::BufWriter, path::Path};
 
 use image::GenericImageView;
 use printpdf::{Image, ImageTransform, Mm, PdfDocument};
@@ -11,13 +11,13 @@ use super::{
     bja_document::BjaDocument, child_document::ChildDocument, parent_document::ParentDocument,
 };
 
-pub(crate) enum Document {
-    Bja(BjaDocument),
-    Parent(ParentDocument),
+pub enum Document<P: AsRef<Path> + Clone + Display + Send + Sync> {
+    Bja(BjaDocument<P>),
+    Parent(ParentDocument<P>),
 }
 
-impl Document {
-    pub(crate) fn from_analyzed_documents(analyzed_documents: Vec<AnalyzedDocument>) -> Vec<Self> {
+impl<P: AsRef<Path> + Clone + Display + Send + Sync> Document<P> {
+    pub fn from_analyzed_documents(analyzed_documents: Vec<AnalyzedDocument<P>>) -> Vec<Self> {
         let mut documents = Vec::new();
 
         for analyzed_document in analyzed_documents {
@@ -62,7 +62,7 @@ impl Document {
                         Ok(image) => {
                             let (width, height) = image.dimensions();
                             let (doc, initial_page, initial_layer) = PdfDocument::new(
-                                bja_document.file_name.as_str(),
+                                bja_document.file_name.to_str().unwrap_or("UNKNOWN"),
                                 Mm(utils::convert_px_to_mm(width as f32, None)),
                                 Mm(utils::convert_px_to_mm(height as f32, None)),
                                 "First Layer",
@@ -112,7 +112,7 @@ impl Document {
                         Ok(image) => {
                             let (width, height) = image.dimensions();
                             let (doc, initial_page, initial_layer) = PdfDocument::new(
-                                parent_document.file_name.as_str(),
+                                parent_document.file_name.to_str().unwrap_or("UNKNOWN"),
                                 Mm(utils::convert_px_to_mm(width as f32, None)),
                                 Mm(utils::convert_px_to_mm(height as f32, None)),
                                 "First Layer",
@@ -133,7 +133,7 @@ impl Document {
                                             let (page_idx, layer_idx) = doc.add_page(
                                                 Mm(utils::convert_px_to_mm(width as f32, None)),
                                                 Mm(utils::convert_px_to_mm(height as f32, None)),
-                                                child.file_name.as_str(),
+                                                child.file_name.to_str().unwrap_or("UNKNOWN"),
                                             );
                                             doc.get_page(page_idx).get_layer(layer_idx)
                                         };
@@ -151,7 +151,7 @@ impl Document {
                                 }
                             }
 
-                            let identifier = parent_document.identifier.as_str();
+                            let identifier = parent_document.identifier.clone();
                             let file_name = format!("{identifier}_{reference}.pdf");
                             let pdf_path = Path::new(target_directory.as_ref()).join(file_name);
 

@@ -10,6 +10,7 @@ type Props<T extends InputTypes> = {
   readonly value: T extends 'string' ? string : number;
   readonly autofocus?: boolean;
   readonly tabindex?: number | string;
+  readonly title?: string;
   readonly disabled?: boolean;
   readonly readonly?: boolean;
   readonly onInput: JSX.InputEventHandlerUnion<HTMLInputElement, InputEvent>;
@@ -28,6 +29,7 @@ const Input: Component<Props<InputTypes>> = (props) => (
     autofocus={props.autofocus ?? false}
     tabindex={props.tabindex}
     pattern=".*\S+.*"
+    title={props.title}
     disabled={props.disabled}
     readonly={props.readonly}
   />

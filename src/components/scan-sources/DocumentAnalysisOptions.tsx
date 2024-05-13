@@ -37,6 +37,7 @@ export default () => {
           updateSourcesFormData('watermark', e.currentTarget.value);
         }}
         tabindex="4"
+        title="Filigrane"
         required
       />
 

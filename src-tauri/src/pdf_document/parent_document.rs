@@ -1,32 +1,36 @@
+use std::{ffi::OsStr, fmt::Display, path::Path};
+
 use crate::analyzed_document::AnalyzedDocument;
 
 use super::child_document::ChildDocument;
 
-pub(crate) struct ParentDocument {
-    pub(crate) identifier: String,
-    pub(crate) image_path: Box<str>,
-    pub(crate) file_name: String,
-    pub(crate) children: Vec<ChildDocument>,
+pub struct ParentDocument<P: AsRef<Path> + Clone + Display + Send + Sync> {
+    pub identifier: Box<str>,
+    pub image_path: P,
+    pub file_name: Box<OsStr>,
+    pub children: Vec<ChildDocument<P>>,
 }
 
-impl ParentDocument {
-    pub(crate) fn new(
-        identifier: String,
-        image_path: Box<str>,
-        file_name: String,
-        children: Vec<ChildDocument>,
+impl<P: AsRef<Path> + Clone + Display + Send + Sync> ParentDocument<P> {
+    pub fn new(
+        identifier: Box<str>,
+        image_path: P,
+        file_name: Box<OsStr>,
+        children: Vec<ChildDocument<P>>,
     ) -> Self {
         Self { identifier, image_path, file_name, children }
     }
 }
 
-impl From<AnalyzedDocument> for ParentDocument {
-    fn from(analyzed_document: AnalyzedDocument) -> Self {
+impl<P: AsRef<Path> + Clone + Display + Send + Sync> From<AnalyzedDocument<P>>
+    for ParentDocument<P>
+{
+    fn from(analyzed_document: AnalyzedDocument<P>) -> Self {
         Self::new(
             analyzed_document.identifier.unwrap(),
-            analyzed_document.image_path,
-            analyzed_document.file_name,
-            Vec::new(),
+            analyzed_document.metadata.image_path,
+            analyzed_document.metadata.file_name,
+            vec![],
         )
     }
 }

@@ -1,10 +1,11 @@
-use std::path::Path;
+use std::{fmt::Display, path::Path};
 
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize)]
-pub(crate) enum BranchContracts {
+#[derive(Serialize, Deserialize, Default)]
+pub enum BranchContracts {
     #[serde(rename = "c-auto")]
+    #[default]
     Auto,
     #[serde(rename = "c-rd")]
     Rd,
@@ -12,33 +13,22 @@ pub(crate) enum BranchContracts {
     Mrc,
 }
 
-impl Default for BranchContracts {
-    fn default() -> Self {
-        Self::Auto
-    }
-}
-
-#[derive(Serialize, Deserialize)]
-pub(crate) enum IdentifierType {
+#[derive(Serialize, Deserialize, Default)]
+pub enum IdentifierType {
     #[serde(rename = "code-128")]
+    #[default]
     Code128,
     #[serde(rename = "qr-code")]
     QrCode,
 }
 
-impl Default for IdentifierType {
-    fn default() -> Self {
-        Self::Code128
-    }
-}
-
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub(crate) struct OptionsRegistry<P: AsRef<Path>> {
-    reference: Box<str>,
+pub struct OptionsRegistry<'a, P: AsRef<Path> + Clone + Display + Send + Sync> {
+    reference: &'a str,
     branch_contract: BranchContracts,
-    pub(crate) sources: Box<[P]>,
-    watermark: Box<str>,
-    identifier_type: IdentifierType,
+    pub sources: Box<[P]>,
+    watermark: &'a str,
+    pub identifier_type: IdentifierType,
     target_dir: P,
 }

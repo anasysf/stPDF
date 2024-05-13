@@ -1,28 +1,36 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+use analyzed_document::AnalyzedDocument;
 use pdf_document::document::Document;
+use registries::options_registry::OptionsRegistry;
 use tauri::AppHandle;
 
-use crate::analyzed_document::AnalyzedDocument;
-
 mod analyzed_document;
-mod barcode_handler;
 mod errors;
+mod identifier_handler;
 mod img;
 mod pdf_document;
 mod registries;
 mod utils;
 
-#[tauri::command]
+/* #[tauri::command]
 async fn analyze_sources(sources: Vec<Box<str>>, app_handle: AppHandle) -> Vec<AnalyzedDocument> {
     AnalyzedDocument::analyze_sources(&app_handle, sources)
+} */
+
+#[tauri::command]
+async fn analyze_sources(
+    app_handle: AppHandle,
+    options_registry: OptionsRegistry<'_, String>,
+) -> Result<Vec<AnalyzedDocument<String>>, ()> {
+    Ok(AnalyzedDocument::analyze_sources(app_handle, options_registry).into_vec())
 }
 
 #[tauri::command]
 async fn generate_pdfs(
     app_handle: AppHandle,
-    analyzed_documents: Vec<AnalyzedDocument>,
+    analyzed_documents: Vec<AnalyzedDocument<String>>,
     target_directory: Box<str>,
     reference: Box<str>,
 ) {

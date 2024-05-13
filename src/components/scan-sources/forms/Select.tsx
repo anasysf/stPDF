@@ -27,7 +27,7 @@ const Select: Component<Props> = (props) => (
     <For each={Object.entries(props.data)}>
       {([key, value]) => (
         <option
-          value={value}
+          value={key}
           selected={key === props.selected}
         >
           {value}
