@@ -1,14 +1,14 @@
 import {
-  type ParentComponent,
   createContext,
-  useContext,
-  createMemo,
   createEffect,
+  createMemo,
   createSignal,
   on,
+  useContext,
+  type ParentComponent,
 } from 'solid-js';
-import { type AnalyzedDocument } from './types';
 import { createStore } from 'solid-js/store';
+import { type AnalyzedDocument } from './types';
 
 const makeAnalyzedDocumentsContext = () => {
   const [analyzedDocs, setAnalyzedDocs] = createStore<AnalyzedDocument[]>([]);

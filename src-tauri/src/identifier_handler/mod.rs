@@ -35,7 +35,7 @@ fn decode_code_128(image: &DynamicImage) -> ScannerResult<RXingResult> {
         (DecodeHintType::TRY_HARDER, DecodeHintValue::TryHarder(true)),
     ]);
 
-    let source = BufferedImageLuminanceSource::new(image.clone());
+    let source = BufferedImageLuminanceSource::new(image.to_owned());
     let binarizer = HybridBinarizer::new(source);
     let mut binary_bitmap = BinaryBitmap::new(binarizer);
 
@@ -51,7 +51,7 @@ fn decode_qr_code(image: &DynamicImage) -> ScannerResult<RXingResult> {
         (DecodeHintType::TRY_HARDER, DecodeHintValue::TryHarder(true)),
     ]);
 
-    let source = BufferedImageLuminanceSource::new(image.clone());
+    let source = BufferedImageLuminanceSource::new(image.to_owned());
     let binarizer = HybridBinarizer::new(source);
     let mut binary_bitmap = BinaryBitmap::new(binarizer);
 

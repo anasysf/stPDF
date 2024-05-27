@@ -1,4 +1,4 @@
-import { type ParentComponent, createContext, useContext } from 'solid-js';
+import { createContext, useContext, type ParentComponent } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import { type SourcesFormData } from './types';
 
@@ -7,7 +7,7 @@ const makeSourcesContext = () => {
     sources: [],
     targetDir: null,
     reference: '',
-    watermark: '',
+    watermark: 'UTILISATION INTERNE SEULEMENT.',
     identifierType: 'code-128',
     branchContract: 'c-auto',
   });

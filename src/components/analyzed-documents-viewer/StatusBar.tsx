@@ -1,7 +1,7 @@
 import { createMemo } from 'solid-js';
 import { useAnalyzedDocumentsContext } from '../../contexts/analyzed-documents';
-import DocumentsButtons from './DocumentsButtons';
 import CarouselNavigationBtns from './CarouselNavigationBtns';
+import DocumentsButtons from './DocumentsButtons';
 
 export default () => {
   const [{ analyzedDocs, currentAnalyzedDocumentIdx, currentAnalyzedDocumentByIdx, contracts }] =

@@ -1,9 +1,9 @@
 import { Show } from 'solid-js';
+import { useAnalyzedDocumentsContext } from '../../contexts/analyzed-documents';
 import Carousel from './Carousel';
 import DetailsBar from './DetailsBar';
-import SourcesGalleryBar from './SourcesGalleryBar';
-import { useAnalyzedDocumentsContext } from '../../contexts/analyzed-documents';
 import NoAnalyzedDocumentsSection from './NoAnalyzedDocumentsSection';
+import SourcesGalleryBar from './SourcesGalleryBar';
 import StatusBar from './StatusBar';
 
 export default () => {

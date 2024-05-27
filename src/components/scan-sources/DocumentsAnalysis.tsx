@@ -1,4 +1,5 @@
 import { message } from '@tauri-apps/plugin-dialog';
+import { createMemo } from 'solid-js';
 import { useSourcesContext } from '../../contexts/sources';
 import { type BranchContracts } from '../../contexts/sources/types';
 import { openImageDialog } from '../../services/dialogService';
@@ -14,6 +15,8 @@ const branchContract: Record<BranchContracts, string> = {
 
 export default () => {
   const [{ sourcesFormData, updateSourcesFormData }] = useSourcesContext();
+
+  const sourcesLen = createMemo(() => sourcesFormData.sources.length);
 
   const handleSourceSelect = async () => {
     try {
@@ -58,7 +61,11 @@ export default () => {
       />
 
       <UploadButton
-        text={sourcesFormData.sources.length === 0 ? 'Sélectionner les sources' : 'Sélectionné'}
+        text={
+          sourcesFormData.sources.length === 0 ?
+            'Sélectionner les sources'
+          : `Sélectionné (${sourcesLen()})`
+        }
         isUploaded={sourcesFormData.sources.length !== 0}
         tabindex="3"
         onClick={async () => handleSourceSelect()}

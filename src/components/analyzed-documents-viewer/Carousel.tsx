@@ -1,6 +1,6 @@
 import { convertFileSrc } from '@tauri-apps/api/core';
-import { useAnalyzedDocumentsContext } from '../../contexts/analyzed-documents';
 import { createSignal } from 'solid-js';
+import { useAnalyzedDocumentsContext } from '../../contexts/analyzed-documents';
 
 type DragEvent = MouseEvent & {
   currentTarget: HTMLDivElement;

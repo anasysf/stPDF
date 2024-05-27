@@ -1,4 +1,4 @@
-import { type Component, Show } from 'solid-js';
+import { Show, type Component } from 'solid-js';
 import { Portal } from 'solid-js/web';
 
 type Props = {

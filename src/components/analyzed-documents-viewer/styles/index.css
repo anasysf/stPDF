@@ -1,3 +1,7 @@
 .simplebar-scrollbar::before {
-  @apply w-0.5 bg-overlay1;
+  @apply w-1 bg-overlay1;
+}
+
+.swal2-popup.swal2-toast {
+  width: auto !important;
 }

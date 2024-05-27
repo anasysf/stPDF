@@ -1,36 +1,43 @@
 use std::{ffi::OsStr, fmt::Display, path::Path};
 
-use crate::analyzed_document::AnalyzedDocument;
+use image::DynamicImage;
+use tauri::State;
+
+use crate::{analyzed_document::AnalyzedDocument, state::AppState};
 
 use super::child_document::ChildDocument;
 
-pub struct ParentDocument<P: AsRef<Path> + Clone + Display + Send + Sync> {
+pub struct ParentDocument {
     pub identifier: Box<str>,
-    pub image_path: P,
     pub file_name: Box<OsStr>,
-    pub children: Vec<ChildDocument<P>>,
+    pub children: Vec<ChildDocument>,
+    pub dynamic_image: DynamicImage,
 }
 
-impl<P: AsRef<Path> + Clone + Display + Send + Sync> ParentDocument<P> {
+impl ParentDocument {
     pub fn new(
         identifier: Box<str>,
-        image_path: P,
         file_name: Box<OsStr>,
-        children: Vec<ChildDocument<P>>,
+        children: Vec<ChildDocument>,
+        dynamic_image: DynamicImage,
     ) -> Self {
-        Self { identifier, image_path, file_name, children }
+        Self { identifier, file_name, children, dynamic_image }
     }
-}
 
-impl<P: AsRef<Path> + Clone + Display + Send + Sync> From<AnalyzedDocument<P>>
-    for ParentDocument<P>
-{
-    fn from(analyzed_document: AnalyzedDocument<P>) -> Self {
+    pub fn from_analyzed_docs<P: AsRef<Path> + Clone + Display + Send + Sync>(
+        state: &State<AppState>,
+        analyzed_document: AnalyzedDocument<P>,
+    ) -> Self {
+        let app_state_guard = state.lock().unwrap();
+        let dynamic_image = app_state_guard
+            .dynamic_document_map
+            .get(analyzed_document.metadata.image_path.as_ref());
+
         Self::new(
             analyzed_document.identifier.unwrap(),
-            analyzed_document.metadata.image_path,
             analyzed_document.metadata.file_name,
             vec![],
+            dynamic_image.unwrap().to_owned(),
         )
     }
 }

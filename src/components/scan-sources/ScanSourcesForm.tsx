@@ -1,14 +1,14 @@
+import { invoke } from '@tauri-apps/api/core';
+import { listen } from '@tauri-apps/api/event';
 import { createMemo, createSignal, onCleanup } from 'solid-js';
+import { useAnalyzedDocumentsContext } from '../../contexts/analyzed-documents';
+import { type AnalyzedDocument } from '../../contexts/analyzed-documents/types';
 import { useSourcesContext } from '../../contexts/sources';
+import { exists } from '../../utils/type-guard';
+import ProgressModal from '../modals/ProgressModal';
 import DocumentAnalysisOptions from './DocumentAnalysisOptions';
 import DocumentsAnalysis from './DocumentsAnalysis';
 import Title from './forms/Title';
-import { invoke } from '@tauri-apps/api/core';
-import { type AnalyzedDocument } from '../../contexts/analyzed-documents/types';
-import { useAnalyzedDocumentsContext } from '../../contexts/analyzed-documents';
-import { exists } from '../../utils/type-guard';
-import { listen } from '@tauri-apps/api/event';
-import ProgressModal from '../modals/ProgressModal';
 
 type SubmitEvent = Event & {
   readonly submitter: HTMLElement;
@@ -49,6 +49,8 @@ export default () => {
     e.preventDefault();
 
     try {
+      await invoke('clear_state');
+
       startedAnalyzingSourcesUnlisten = await listen<number>(
         'started-analyzing-sources',
         ({ payload }) => {
@@ -73,9 +75,11 @@ export default () => {
     }
   };
 
-  const handleReset = () => {
+  const handleReset = async () => {
     resetSourcesFormData();
     resetDocs();
+
+    await invoke('clear_state');
   };
 
   onCleanup(() => {
@@ -100,8 +104,8 @@ export default () => {
           type="button"
           class="inline-flex items-center gap-x-2 rounded bg-red px-3 py-1.5 text-lg font-semibold text-white shadow transition duration-200 ease-in-out hover:shadow-lg disabled:cursor-not-allowed disabled:bg-overlay0 disabled:text-text disabled:shadow-none"
           disabled={!canReset()}
-          onClick={() => {
-            handleReset();
+          onClick={async () => {
+            await handleReset();
           }}
         >
           <i class="fa-solid fa-rotate-left mt-0.5" />

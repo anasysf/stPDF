@@ -1,4 +1,4 @@
-import { type Component, For, type JSX } from 'solid-js';
+import { For, type Component, type JSX } from 'solid-js';
 
 type Props = {
   readonly data: Record<PropertyKey, string>;

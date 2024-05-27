@@ -9,5 +9,5 @@ type DocumentMetadata = {
   readonly fileName: {
     readonly Windows: Uint16Array;
   };
-  readonly size: bigint;
+  readonly size: string;
 };

@@ -1,4 +1,4 @@
-import { type FileResponse, open } from '@tauri-apps/plugin-dialog';
+import { open, type FileResponse } from '@tauri-apps/plugin-dialog';
 
 export const openImageDialog = async (): Promise<FileResponse[] | null> =>
   open({

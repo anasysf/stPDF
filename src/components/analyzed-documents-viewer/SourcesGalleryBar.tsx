@@ -1,5 +1,5 @@
-import { For } from 'solid-js';
 import { convertFileSrc } from '@tauri-apps/api/core';
+import { For } from 'solid-js';
 import { useAnalyzedDocumentsContext } from '../../contexts/analyzed-documents';
 import './styles/index.css';
 

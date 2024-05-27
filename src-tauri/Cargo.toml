@@ -1,6 +1,6 @@
 [package]
 name = "stpdf"
-version = "0.9.3"
+version = "0.9.4"
 description = "A Tauri App"
 authors = ["you"]
 edition = "2021"
@@ -22,6 +22,9 @@ printpdf = { version = "0.7.0", default-features = false, features = ["embedded_
 tauri-plugin-fs = "2.0.0-beta.4"
 thiserror = "1.0.58"
 rayon = "1.10.0"
+human_bytes = { version = "*", features = ["fast"] }
+xlsxwriter = "0.6.0"
+humantime = "2.1.0"
 
 [profile.release]
 panic = "abort" # Strip expensive panic clean-up logic

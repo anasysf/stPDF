@@ -1,20 +1,23 @@
-import { Match, Switch, createEffect, createSignal, onCleanup } from 'solid-js';
-import { useAnalyzedDocumentsContext } from '../../contexts/analyzed-documents';
 import { invoke } from '@tauri-apps/api/core';
-import { useSourcesContext } from '../../contexts/sources';
-import { message } from '@tauri-apps/plugin-dialog';
 import { listen } from '@tauri-apps/api/event';
+import { message } from '@tauri-apps/plugin-dialog';
+import { Match, Switch, createSignal, onCleanup } from 'solid-js';
+import Sweet from 'sweetalert2';
+import { useAnalyzedDocumentsContext } from '../../contexts/analyzed-documents';
+import { useSourcesContext } from '../../contexts/sources';
 import ProgressModal from '../modals/ProgressModal';
+import './styles/index.css';
 
 export default () => {
+  let startedGeneratingPdfsUnlisten: Awaited<ReturnType<typeof listen>> | undefined;
+  let currentPdfUnlisten: Awaited<ReturnType<typeof listen>> | undefined;
+  let doneGeneratingPdfsUnlisten: Awaited<ReturnType<typeof listen>> | undefined;
+
   const [pdfsGenerated, setPdfsGenerated] = createSignal(false);
 
   const [pdfsGenerationStarted, setPdfsGenerationStarted] = createSignal(false);
   const [pdfsLen, setPdfsLen] = createSignal<number | null>(null);
   const [currentPdf, setCurrentPdf] = createSignal<number | null>(null);
-
-  let startedGeneratingPdfsUnlisten: Awaited<ReturnType<typeof listen>> | undefined;
-  let currentPdfUnlisten: Awaited<ReturnType<typeof listen>> | undefined;
 
   const [{ isValidDocuments, setIsValidDocuments, includedDocuments }] =
     useAnalyzedDocumentsContext();
@@ -56,14 +59,28 @@ export default () => {
 
   const generatePdfs = async () => {
     try {
+      doneGeneratingPdfsUnlisten = await listen<string>(
+        'done-generating-pdfs',
+        async ({ payload }) => {
+          await Sweet.fire({
+            toast: true,
+            text: `${pdfsLen()} fichiers PDF ont été générés en ${payload}`,
+            icon: 'success',
+            timerProgressBar: true,
+            timer: 7000,
+            showCloseButton: true,
+            position: 'bottom-right',
+            showConfirmButton: false,
+          });
+        },
+      );
+
       await invoke('generate_pdfs', {
         analyzedDocuments: includedDocuments(),
-        targetDirectory: sourcesFormData.targetDir,
-        reference: sourcesFormData.reference,
+        optionsRegistry: sourcesFormData,
       });
 
       setPdfsGenerated(true);
-      setPdfsGenerationStarted(false);
     } catch (err) {
       await message('Could not generate PDFs.', {
         kind: 'error',
@@ -71,7 +88,21 @@ export default () => {
       });
 
       setPdfsGenerated(false);
+    } finally {
       setPdfsGenerationStarted(false);
+    }
+  };
+
+  const generateExcel = async () => {
+    try {
+      await invoke('generate_excel', {
+        optionsRegistry: sourcesFormData,
+      });
+    } catch (err) {
+      await message('Could not generate Excel.', {
+        kind: 'error',
+        title: 'Oops..',
+      });
     }
   };
 
@@ -126,7 +157,7 @@ export default () => {
       <button
         type="button"
         class="rounded bg-green px-2.5 py-1.5 font-semibold text-white shadow transition duration-200 ease-in-out hover:shadow-lg disabled:cursor-not-allowed disabled:bg-overlay0 disabled:text-text disabled:shadow-none"
-        onClick={() => setIsValidDocuments(false)}
+        onClick={async () => generateExcel()}
         disabled={!pdfsGenerated()}
       >
         Générer le fichier Excel

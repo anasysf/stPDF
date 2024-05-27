@@ -1,5 +1,5 @@
-import { useAnalyzedDocumentsContext } from '../../contexts/analyzed-documents';
 import { produce } from 'solid-js/store';
+import { useAnalyzedDocumentsContext } from '../../contexts/analyzed-documents';
 import Input from '../scan-sources/forms/Input';
 
 export default () => {
@@ -27,7 +27,7 @@ export default () => {
 
         <li class="py-4">
           <p class="text-sm font-bold text-white">
-            {currentAnalyzedDocumentByIdx()?.metadata.size.toString()} Mb
+            {currentAnalyzedDocumentByIdx()?.metadata.size}
           </p>
         </li>
 
@@ -90,23 +90,6 @@ export default () => {
               readonly={isValidDocuments()}
             />
           </div>
-
-          {/* <input
-            type="text"
-            placeholder="Indiquer l'identifiant..."
-            class="w-full rounded border-2 border-blue-900 bg-slate-800 px-4 py-2 text-white focus:outline-none disabled:cursor-not-allowed disabled:border-transparent disabled:text-slate-600"
-            value={currentAnalyzedDocumentByIdx()!.identifier ?? ''}
-            disabled={isValidDocuments()}
-            readonly={isValidDocuments()}
-            onInput={(e) => {
-              setAnalyzedDocs(
-                produce((analyzedDocuments) => {
-                  analyzedDocuments.at(currentAnalyzedDocumentIdx())!.identifier =
-                    e.currentTarget.value;
-                }),
-              );
-            }}
-          /> */}
         </li>
       </ul>
     </aside>
